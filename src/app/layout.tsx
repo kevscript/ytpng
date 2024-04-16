@@ -19,7 +19,33 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-neutral-800 min-w-fit">
-      <body className={roboto.className}>{children}</body>
+      <body className={roboto.className}>
+        {children}
+        <div className="w-full flex justify-center items-center py-16 text-white gap-4">
+          <span>made by kevscript :)</span>{" "}
+          <a
+            href="https://twitter.com/kevscript"
+            target="_blank"
+            className="underline"
+          >
+            Twitter
+          </a>{" "}
+          <a
+            href="https://github.com/kevscript"
+            target="_blank"
+            className="underline"
+          >
+            Github
+          </a>
+          <a
+            href="https://github.com/kevscript/ytpng"
+            target="_blank"
+            className="underline"
+          >
+            Project Repo
+          </a>
+        </div>
+      </body>
     </html>
   );
 }
