@@ -17,7 +17,7 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <main className="py-16 flex flex-col items-center">
       <h1 className="font-bold text-4xl text-white mb-16">
-        Generate PNG from Youtube video
+        Generate PNG from a Youtube video
       </h1>
       <UrlInput />
       {data && !data.error && <Playground data={data} />}

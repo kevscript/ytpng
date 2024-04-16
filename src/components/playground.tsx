@@ -31,14 +31,6 @@ export function Playground({ data }: PlaygroundProps) {
 
   const thumbRef = useRef(null);
 
-  const [downloadBtnText, setDownloadBtnText] = useState("Download as PNG");
-  const [saveAsPresetBtnText, setSaveAsPresetBtnText] =
-    useState("Save as preset");
-  const [resetToPresetBtnText, setResetToPresetBtnText] =
-    useState("Reset to preset");
-  const [resetToDefaultBtnText, setResetToDefaultBtnText] =
-    useState("Reset to default");
-
   function generateAndDownload() {
     if (thumbRef.current && data) {
       toPng(thumbRef.current, { cacheBust: false })
@@ -162,13 +154,13 @@ export function Playground({ data }: PlaygroundProps) {
           className="bg-red-600 font-semibold"
           onClick={generateAndDownload}
         >
-          {downloadBtnText}
+          Download as PNG
         </Button>
         <Button
           className="bg-neutral-900"
           onClick={() => saveAsPreset(userOptions)}
         >
-          {saveAsPresetBtnText}
+          Save as preset
         </Button>
         <Button
           className="bg-neutral-900"
@@ -176,13 +168,13 @@ export function Playground({ data }: PlaygroundProps) {
             setUserOptions(getUserOptions(defaultOptions));
           }}
         >
-          {resetToPresetBtnText}
+          Reset to preset
         </Button>
         <Button
           className="bg-neutral-900"
           onClick={() => resetPresetToDefault(userOptions)}
         >
-          {resetToDefaultBtnText}
+          Reset to default
         </Button>
       </div>
       <div className="flex flex-1 flex-col gap-8 items-center justify-center">
