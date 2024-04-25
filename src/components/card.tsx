@@ -1,7 +1,5 @@
 "use client";
-import { RefObject, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
-import useResizeObserver from "@react-hook/resize-observer";
 import * as moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
 import { abbreviateNumber } from "js-abbreviation-number";
@@ -10,26 +8,13 @@ typeof moment.duration.fn.format === "function";
 // typeof moment.duration.duration === "function";
 moment.locale("fr");
 
-const useSize = (target: React.RefObject<HTMLDivElement>) => {
-  const [size, setSize] = useState<DOMRectReadOnly>();
-
-  useLayoutEffect(() => {
-    setSize(target.current?.getBoundingClientRect());
-  }, [target]);
-
-  // Where the magic happens
-  useResizeObserver(target, (entry) => setSize(entry.contentRect));
-  return size;
-};
-
 type CardProps = {
   userOptions: any;
   data: any;
-  cardRef: RefObject<HTMLDivElement>;
+  size: any;
 };
 
-export function Card({ userOptions, data, cardRef }: CardProps) {
-  const size = useSize(cardRef);
+export function Card({ userOptions, data, size }: CardProps) {
   return (
     <>
       {size && (
@@ -106,7 +91,7 @@ export function Card({ userOptions, data, cardRef }: CardProps) {
                 style={{
                   fontSize: `${
                     ((size?.width / 100) *
-                      (userOptions["time-size"].value as number)) /
+                      (userOptions["stats-size"].value as number)) /
                     4
                   }px`,
                 }}

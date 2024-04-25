@@ -10,6 +10,7 @@ import { ColorInput } from "./color-input";
 import { Button } from "./button";
 import { LOCAL_STORAGE_PREFIX } from "@/constants/local-storage";
 import { Card } from "./card";
+import useResizeObserver from "use-resize-observer";
 
 type PlaygroundProps = {
   data: any;
@@ -21,15 +22,17 @@ export function Playground({ data }: PlaygroundProps) {
   }>(null);
 
   const cardRef = useRef<HTMLDivElement>(null);
+  const { width, height } = useResizeObserver<HTMLDivElement>({
+    ref: cardRef,
+  });
 
   function generateAndDownload() {
     if (cardRef.current && data) {
-      const thumbSize = cardRef.current.getBoundingClientRect();
-      const ratio = 640 / thumbSize.width;
+      const ratio = 640 / cardRef.current.clientWidth;
       toPng(cardRef.current, {
         cacheBust: false,
         canvasWidth: 640,
-        canvasHeight: thumbSize.height * ratio,
+        canvasHeight: cardRef.current.clientHeight * ratio,
       })
         .then((dataUrl) => {
           const link = document.createElement("a");
@@ -80,7 +83,13 @@ export function Playground({ data }: PlaygroundProps) {
       {data && userOptions && (
         <div className="flex flex-col gap-8 max-w-[640px] md:sticky md:top-16 h-fit">
           <div ref={cardRef}>
-            <Card userOptions={userOptions} data={data} cardRef={cardRef} />
+            {width && (
+              <Card
+                userOptions={userOptions}
+                data={data}
+                size={{ width, height }}
+              />
+            )}
           </div>
           <div className="flex flex-wrap gap-4 text-white">
             <Button
