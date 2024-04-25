@@ -22,6 +22,9 @@ export default async function Home({ searchParams }: HomeProps) {
             Generate PNG from a Youtube video
           </h1>
           <UrlInput />
+          <span className="text-white">
+            Currently buggy. Will fix when I have time :)
+          </span>
         </div>
         {data && !data.error && <Playground data={data} />}
       </div>
