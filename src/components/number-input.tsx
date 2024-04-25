@@ -9,12 +9,12 @@ type NumberInputProps = {
 
 export function NumberInput({ option, handleOption }: NumberInputProps) {
   return (
-    <div className="flex flex-col gap-4 min-w-80 w-fit bg-neutral-900 text-white p-6">
-      <div className="flex justify-between items-center">
-        <span>{option.label}</span>
-        <div className="h-8 w-32 rounded-full bg-white flex text-black select-none">
+    <div className="flex flex-col gap-4 bg-neutral-900 text-white p-4 w-full">
+      <div className="flex justify-between items-center gap-4">
+        <span className="text-sm">{option.label}</span>
+        <div className="h-6 rounded-full bg-white flex text-black select-none">
           <div
-            className="w-8 h-full flex justify-center items-center cursor-pointer"
+            className="w-6 h-full flex justify-center items-center cursor-pointer"
             onClick={() =>
               handleOption(
                 option.id,
@@ -26,7 +26,7 @@ export function NumberInput({ option, handleOption }: NumberInputProps) {
           </div>
           <input
             type="number"
-            className="h-full bg-transparent w-16 border-x outline-none text-end px-2"
+            className="h-full text-sm bg-transparent w-10 border-x outline-none text-end px-2"
             min={option.min}
             max={option.max}
             value={option.value}
@@ -38,7 +38,7 @@ export function NumberInput({ option, handleOption }: NumberInputProps) {
             }
           />
           <div
-            className="w-8 h-full flex justify-center items-center cursor-pointer select-none"
+            className="w-6 h-full flex justify-center items-center cursor-pointer select-none"
             onClick={() =>
               handleOption(
                 option.id,

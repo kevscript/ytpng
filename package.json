@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-hook/resize-observer": "^1.2.6",
     "html-to-image": "^1.11.11",
     "js-abbreviation-number": "^1.4.0",
     "moment": "^2.30.1",

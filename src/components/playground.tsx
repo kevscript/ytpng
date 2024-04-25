@@ -6,19 +6,10 @@ import { toPng } from "html-to-image";
 import { getUserOptions } from "@/utils/get-user-options";
 import { useEffect, useRef, useState } from "react";
 import { NumberInput } from "./number-input";
-import Image from "next/image";
-import { abbreviateNumber } from "js-abbreviation-number";
-import * as moment from "moment";
-import momentDurationFormatSetup from "moment-duration-format";
-import "moment/locale/fr";
 import { ColorInput } from "./color-input";
 import { Button } from "./button";
 import { LOCAL_STORAGE_PREFIX } from "@/constants/local-storage";
-
-momentDurationFormatSetup(moment);
-typeof moment.duration.fn.format === "function";
-// typeof moment.duration.duration === "function";
-moment.locale("fr");
+import { Card } from "./card";
 
 type PlaygroundProps = {
   data: any;
@@ -29,11 +20,17 @@ export function Playground({ data }: PlaygroundProps) {
     [key: string]: Option;
   }>(null);
 
-  const thumbRef = useRef(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   function generateAndDownload() {
-    if (thumbRef.current && data) {
-      toPng(thumbRef.current, { cacheBust: false })
+    if (cardRef.current && data) {
+      const thumbSize = cardRef.current.getBoundingClientRect();
+      const ratio = 640 / thumbSize.width;
+      toPng(cardRef.current, {
+        cacheBust: false,
+        canvasWidth: 640,
+        canvasHeight: thumbSize.height * ratio,
+      })
         .then((dataUrl) => {
           const link = document.createElement("a");
           link.download = `${data.items[0].snippet.title}.png`;
@@ -74,111 +71,50 @@ export function Playground({ data }: PlaygroundProps) {
   }, []);
 
   return (
-    <div className="relative flex w-full flex-col gap-16 p-16 justify-center items-center">
+    <div className="relative flex w-full gap-8 md:flex-row flex-col">
+      {(!data || !userOptions) && (
+        <div className="w-full flex justify-center items-center text-white">
+          <span>Loading...</span>
+        </div>
+      )}
       {data && userOptions && (
-        <div>
-          <div
-            ref={thumbRef}
-            className="w-[1280px] shrink-0 overflow-hidden"
-            style={{
-              backgroundColor: `${userOptions["bg-color"].value}`,
-              borderRadius: `${userOptions["outer-radius"].value}px`,
-              paddingTop: `${userOptions["padding-top"].value}px`,
-              paddingLeft: `${userOptions["padding-left"].value}px`,
-              paddingRight: `${userOptions["padding-right"].value}px`,
-              paddingBottom: `${userOptions["padding-bottom"].value}px`,
-            }}
-          >
-            <div
-              className="relative w-full aspect-[1/0.5625] flex justify-center items-center overflow-hidden"
-              style={{ borderRadius: `${userOptions["inner-radius"].value}px` }}
+        <div className="flex flex-col gap-8 max-w-[640px] md:sticky md:top-16 h-fit">
+          <div ref={cardRef}>
+            <Card userOptions={userOptions} data={data} cardRef={cardRef} />
+          </div>
+          <div className="flex flex-wrap gap-4 text-white">
+            <Button
+              className="bg-red-600 font-semibold"
+              onClick={generateAndDownload}
             >
-              <Image
-                className="w-full object-contain"
-                src={data.items[0].snippet.thumbnails.maxres.url}
-                width={0}
-                height={0}
-                sizes="100vw"
-                alt="thumbnail"
-              />
-              <div className="absolute bottom-4 right-4 bg-neutral-950 py-1 px-2 rounded-lg">
-                <span className="text-white text-xl">
-                  {moment
-                    .duration(data.items[0].contentDetails.duration, "minutes")
-                    .format("hh:mm:ss", {
-                      trim: "both mid",
-                    })}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex flex-col">
-              <span
-                className="line-clamp-2 font-medium"
-                style={{
-                  fontSize: `${userOptions["title-size"].value}px`,
-                  marginTop: `${userOptions["title-margin"].value}px`,
-                  color: `${userOptions["title-color"].value}`,
-                }}
-              >
-                {data.items[0].snippet.title}
-              </span>
-
-              <div
-                className="flex items-center"
-                style={{
-                  marginTop: `${userOptions["stats-margin"].value}px`,
-                  columnGap: `${userOptions["stats-gap"].value}px`,
-                  color: `${userOptions["stats-color"].value}`,
-                }}
-              >
-                <span
-                  style={{ fontSize: `${userOptions["stats-size"].value}px` }}
-                >
-                  {abbreviateNumber(data.items[0].statistics.viewCount, 0) +
-                    " vues"}
-                </span>
-                <span>•</span>
-                <span
-                  style={{ fontSize: `${userOptions["stats-size"].value}px` }}
-                >
-                  {moment.utc(data.items[0].snippet.publishedAt).fromNow()}
-                </span>
-              </div>
-            </div>
+              Download as PNG
+            </Button>
+            <Button
+              className="bg-neutral-900"
+              onClick={() => saveAsPreset(userOptions)}
+            >
+              Save as preset
+            </Button>
+            <Button
+              className="bg-neutral-900"
+              onClick={() => {
+                setUserOptions(getUserOptions(defaultOptions));
+              }}
+            >
+              Reset to preset
+            </Button>
+            <Button
+              className="bg-neutral-900"
+              onClick={() => resetPresetToDefault(userOptions)}
+            >
+              Reset to default
+            </Button>
           </div>
         </div>
       )}
-      <div className="flex flex-wrap gap-4 text-white">
-        <Button
-          className="bg-red-600 font-semibold"
-          onClick={generateAndDownload}
-        >
-          Download as PNG
-        </Button>
-        <Button
-          className="bg-neutral-900"
-          onClick={() => saveAsPreset(userOptions)}
-        >
-          Save as preset
-        </Button>
-        <Button
-          className="bg-neutral-900"
-          onClick={() => {
-            setUserOptions(getUserOptions(defaultOptions));
-          }}
-        >
-          Reset to preset
-        </Button>
-        <Button
-          className="bg-neutral-900"
-          onClick={() => resetPresetToDefault(userOptions)}
-        >
-          Reset to default
-        </Button>
-      </div>
-      <div className="flex flex-1 flex-col gap-8 items-center justify-center">
-        <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-1">
+
+      <div className="flex flex-1 flex-col gap-1 w-full">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(275px,1fr))] gap-1">
           {userOptions &&
             Object.entries(userOptions).map(([key, value]) => {
               if (value.type === "number") {
@@ -194,7 +130,7 @@ export function Playground({ data }: PlaygroundProps) {
               return null;
             })}
         </div>
-        <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-1">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(275px,1fr))] gap-1">
           {userOptions &&
             Object.entries(userOptions).map(([key, value]) => {
               if (value.type === "color") {

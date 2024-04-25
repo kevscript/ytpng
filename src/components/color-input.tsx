@@ -9,7 +9,7 @@ type ColorInputProps = {
 
 export function ColorInput({ option, handleOption }: ColorInputProps) {
   return (
-    <div className="flex flex-col gap-4 min-w-80 w-fit bg-neutral-900 text-white p-6">
+    <div className="flex flex-col gap-4 bg-neutral-900 text-white p-4 w-full">
       <div className="flex flex-col gap-4">
         <div className="flex w-full justify-between items-center">
           <span>{option.label}</span>
