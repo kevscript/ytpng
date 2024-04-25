@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en" className="bg-neutral-800 min-w-fit">
       <body className={roboto.className}>
         {children}
-        {/* <div className="w-full flex justify-center items-center py-16 text-white gap-4">
+        <div className="w-full flex justify-center items-center py-16 text-white gap-4">
           <span>made by kevscript :)</span>{" "}
           <a
             href="https://twitter.com/kevscript"
@@ -44,7 +44,7 @@ export default function RootLayout({
           >
             Project Repo
           </a>
-        </div> */}
+        </div>
       </body>
     </html>
   );
